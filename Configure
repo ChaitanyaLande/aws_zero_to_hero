@@ -1,0 +1,52 @@
+# confure local yum or dnf Directory
+sudo lsblk 
+
+# Check if iso image is mounted on sr0
+# If not go to vm ware settings and add iso img - click on cd/dvd option and check the connected checkbox
+
+# Verify using 
+sudo lsblk
+
+# Create directory localrepo on root
+sudo mkdir /localrepo
+
+# Mount the iso img
+sudo mount /dev/sr0 /localrepo/
+
+#verigy 
+sudo df -hT
+
+#for permanent mounting make entry in /etc/fstab file
+sudo  vim /etc/fstab
+- /dev/sr0 /localrepo iso9660 defaults 0 0
+# Save the file
+
+# Go to /etc/yum.repos.d/
+sudo cd /etc/yum.repos.d
+
+# Create file
+sudo vim local.repo
+# Go into inser mode
+- [BaseOS]
+  name=RHEL8-BaseOS
+  metadata_expire=-1
+  gpgcheck=1
+  enabled=1
+  baseurl=file:///localrepo/BaseOS
+  gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+- [AppStream]
+  name=RHEL8-AppStream
+  metadata_expire=-1
+  gpgcheck=1
+  enabled=1
+  baseurl=file:///localrepo/AppStream
+  gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+# Save the file
+
+#verify
+sudo yum repolist all
+
+# Done, Now you can install any packages using yum cmd.
+
